@@ -1,0 +1,30 @@
+name: Run tests
+
+on: [push, workflow_dispatch]
+
+jobs:
+  node-tests:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: install dependencies
+        run: npm install
+      - name: build
+        run: npm run build
+      - name: tests
+        run: npm test
+  deno-tests:
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Deno
+        uses: maximousblk/setup-deno@v1
+      - run: deno -V
+      - name: Run tests
+        run: deno test __tests__/deno.ts --allow-write --allow-read --unstable
