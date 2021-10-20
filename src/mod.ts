@@ -9,7 +9,8 @@ export class FileAdapter<T> implements StorageAdapter<T> {
   }
 
   private resolveSessionPath(key: string) {
-    return path.resolve(this.folderPath, `${key}.json`)
+    const subFolder = key.substr(-2)
+    return path.resolve(this.folderPath, subFolder, `${key}.json`)
   }
 
   private async findSessionFile(key: string) {
@@ -31,7 +32,11 @@ export class FileAdapter<T> implements StorageAdapter<T> {
   }
 
   async write(key: string, value: T) {
-    await fs.writeFile(this.resolveSessionPath(key), JSON.stringify(value))
+    const fullPath = this.resolveSessionPath(key)
+    const folderPath = fullPath.replace(`${key}.json`, '')
+
+    await fs.ensureDir(folderPath)
+    await fs.writeFile(fullPath, JSON.stringify(value))
   }
 
   async delete(key: string) {
