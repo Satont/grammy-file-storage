@@ -7,7 +7,8 @@ export const fs = {
   writeFile: Deno.writeTextFile,
   exists,
   existsSync,
-  ensureDirSync,
+  ensureDir: (path: string) => Deno.mkdir(path, { recursive: true }),
+  ensureDirSync: (path: string) => Deno.mkdirSync(path, { recursive: true }),
   remove: Deno.remove
 }
 
