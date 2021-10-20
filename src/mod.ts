@@ -33,7 +33,8 @@ export class FileAdapter<T> implements StorageAdapter<T> {
 
   async write(key: string, value: T) {
     const fullPath = this.resolveSessionPath(key)
-    const folderPath = fullPath.replace(`${key}.json`, '')
+    const fileName = `${key}.json`
+    const folderPath = fullPath.substring(0, fullPath.length - fileName.length)
 
     await fs.ensureDir(folderPath)
     await fs.writeFile(fullPath, JSON.stringify(value))
