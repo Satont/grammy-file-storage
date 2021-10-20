@@ -7,6 +7,7 @@ import { fs, path } from '../src/deps.deno.ts'
 interface SessionData {
   pizzaCount: number;
 }
+interface SimpleString extends String {}
 
 Deno.test('Bot should be created', () => {
   expect(createBot()).not.toBeFalsy()
@@ -46,7 +47,6 @@ Deno.test('Pizza counter tests', async () => {
 })
 
 Deno.test('Simple string tests', async () => {
-  type SimpleString = string
   const bot = createBot<SimpleString>();
 
   bot.use(session({
