@@ -8,7 +8,6 @@ interface SessionData {
   pizzaCount: number;
 }
 
-
 Deno.test('Bot should be created', () => {
   expect(createBot()).not.toBeFalsy()
 })

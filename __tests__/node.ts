@@ -1,12 +1,12 @@
 
 import { Bot, Context, SessionFlavor, session } from 'grammy';
+import { resolve } from 'path';
 import { FileAdapter } from '../dist/mod';
 import { fs, path, cwd } from '../src/deps.node'
 
 interface SessionData {
   pizzaCount: number;
 }
-
 
 const dirPath = path.resolve(cwd(), 'sessions')
 const cleanDir = async () => {
@@ -17,7 +17,7 @@ test('Bot should be created', () => {
   expect(createBot()).not.toBeFalsy()
 })
 
-afterEach(async () => await cleanDir())
+beforeEach(async () => await cleanDir())
 
 test('Should create sessions dir', async () => {
   new FileAdapter({ dirName: 'sessions' })
@@ -51,9 +51,7 @@ test('Simple string tests', async () => {
   const bot = createBot<SimpleString>();
 
   bot.use(session({
-    initial() {
-      return 'test';
-    },
+    initial: () => 'test',
     storage: new FileAdapter({ dirName: 'sessions' }),
   }));
 
