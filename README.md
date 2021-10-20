@@ -9,7 +9,7 @@ using sessions.
 Node
 
 ```bash
-npm install @satont/grammy-files-storage pg --save
+npm install @satont/grammy-file-storage --save
 ```
 
 Deno
