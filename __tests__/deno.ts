@@ -8,9 +8,10 @@ interface SessionData {
   pizzaCount: number;
 }
 
-Deno.test('Bot should be created', () => {
-  expect(createBot()).not.toBeFalsy()
-})
+interface StringSessionFlavor {
+  get session(): string;
+  set session(session: string | null | undefined);
+}
 
 const dirPath = path.resolve(Deno.cwd(), 'sessions')
 const cleanDir = () => Deno.remove(dirPath, { recursive: true })
@@ -23,7 +24,17 @@ Deno.test('Should create sessions dir', async () => {
 })
  
 Deno.test('Pizza counter tests', async () => {
-  const bot = createBot<SessionData>();
+  const bot = new Bot<Context & SessionFlavor<SessionData>>('fake-token', { 
+    botInfo: {
+      id: 42,
+      first_name: 'Test Bot',
+      is_bot: true,
+      username: 'bot',
+      can_join_groups: true,
+      can_read_all_group_messages: true,
+      supports_inline_queries: false,
+    },
+  });;
 
   bot.use(session({
     initial: () => ({ pizzaCount: 0 }),
@@ -46,7 +57,17 @@ Deno.test('Pizza counter tests', async () => {
 })
 
 Deno.test('Simple string tests', async () => {
-  const bot = createBot<string>();
+  const bot = new Bot<Context & StringSessionFlavor>('fake-token', { 
+    botInfo: {
+      id: 42,
+      first_name: 'Test Bot',
+      is_bot: true,
+      username: 'bot',
+      can_join_groups: true,
+      can_read_all_group_messages: true,
+      supports_inline_queries: false,
+    },
+  });;
 
   bot.use(session({
     initial: () => 'test',
@@ -66,20 +87,6 @@ Deno.test('Simple string tests', async () => {
 
   await cleanDir()
 })
-
-function createBot<T>(token = 'fake-token') {
-  return new Bot<Context & SessionFlavor<T>>(token, { 
-    botInfo: {
-      id: 42,
-      first_name: 'Test Bot',
-      is_bot: true,
-      username: 'bot',
-      can_join_groups: true,
-      can_read_all_group_messages: true,
-      supports_inline_queries: false,
-    },
-  });
-}
 
 function createMessage(bot: Bot<any>, text = 'Test Text') {
   const createRandomNumber = () => Math.floor(Math.random() * (123456789 - 1) + 1);

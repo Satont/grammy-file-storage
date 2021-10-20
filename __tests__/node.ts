@@ -1,6 +1,5 @@
 
 import { Bot, Context, SessionFlavor, session } from 'grammy';
-import { resolve } from 'path';
 import { FileAdapter } from '../dist/mod';
 import { fs, path, cwd } from '../src/deps.node'
 
@@ -12,10 +11,6 @@ const dirPath = path.resolve(cwd(), 'sessions')
 const cleanDir = async () => {
   await fs.remove(dirPath).catch(() => null)
 }
-
-test('Bot should be created', () => {
-  expect(createBot()).not.toBeFalsy()
-})
 
 beforeEach(async () => await cleanDir())
 
@@ -47,8 +42,22 @@ test('Pizza counter tests', async () => {
  
 
 test('Simple string tests', async () => {
-  type SimpleString = string
-  const bot = createBot<SimpleString>();
+  interface StringSessionFlavor {
+    get session(): string;
+    set session(session: string | null | undefined);
+}
+
+  const bot = new Bot<Context & StringSessionFlavor>('fake-token', { 
+    botInfo: {
+      id: 42,
+      first_name: 'Test Bot',
+      is_bot: true,
+      username: 'bot',
+      can_join_groups: true,
+      can_read_all_group_messages: true,
+      supports_inline_queries: false,
+    },
+  });;
 
   bot.use(session({
     initial: () => 'test',
