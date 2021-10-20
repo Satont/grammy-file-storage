@@ -1,6 +1,6 @@
 
-import { Bot, Context, SessionFlavor, session } from 'https://deno.land/x/grammy/mod.ts';
-import { expect } from 'https://deno.land/x/expect/mod.ts'
+import { Bot, Context, SessionFlavor, session } from 'https://deno.land/x/grammy@v1.3.4/mod.ts';
+import { expect } from 'https://deno.land/x/expect@v0.2.9/mod.ts'
 import { FileAdapter } from '../src/mod.ts';
 import { fs, path } from '../src/deps.deno.ts'
 
@@ -46,12 +46,10 @@ Deno.test('Pizza counter tests', async () => {
 })
 
 Deno.test('Simple string tests', async () => {
-  const bot = createBot<String>();
+  const bot = createBot<string>();
 
   bot.use(session({
-    initial() {
-      return 'test';
-    },
+    initial: () => 'test',
     storage: new FileAdapter({ dirName: 'sessions' }),
   }));
 
