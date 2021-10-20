@@ -20,7 +20,7 @@
     "url": "git+https://github.com/Satont/grammy-file-storage.git"
   },
   "author": "Satont <satontworldwide@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Satont/grammy-file-storage/issues"
   },
