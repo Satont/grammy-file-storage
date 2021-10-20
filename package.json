@@ -1,7 +1,7 @@
 {
   "name": "@satont/grammy-file-storage",
   "version": "1.0.0",
-  "description": "File storage for grammy library.",
+  "description": "File storage for grammY library.",
   "main": "dist/mod.js",
   "types": "dist/mod.d.ts",
   "files": [
