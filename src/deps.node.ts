@@ -23,11 +23,7 @@ export const fs = {
       } else throw e
     }
   },
-  ensureDirSync: (path: string) => {
-    if (!existsSync(path)) {
-      mkdirSync(path, { recursive: true })
-    }
-  },
+  ensureDirSync: (path: string) => mkdirSync(path, { recursive: true }),
   remove: (path: string) => rm(path, { recursive: true })
 }
 
