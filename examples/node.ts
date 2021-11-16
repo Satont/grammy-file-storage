@@ -11,7 +11,9 @@ async function bootstrap() {
   bot.use(
     session({
       initial: () => ({ counter: 0 }),
-      storage: new FileAdapter(),
+      storage: new FileAdapter({
+        dirName: "sessions",
+      }),
     })
   );
   
