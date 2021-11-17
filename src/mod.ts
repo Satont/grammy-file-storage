@@ -1,15 +1,18 @@
-import { StorageAdapter, fs, path, cwd } from './deps.deno.ts';
+import { cwd, fs, path, StorageAdapter } from "./deps.deno.ts";
 
-type ConstructorOptions = {
+type Serializer<Session> = (input: Session) => string;
+type Deserializer<Session> = (input: string) => Session;
+
+interface ConstructorOptions<Session> {
   dirName?: string;
-  serializer?: (input: any) => string;
-  deserializer?: (input: string) => unknown;
-};
+  serializer?: Serializer<Session>;
+  deserializer?: Deserializer<Session>;
+}
 
 export class FileAdapter<T> implements StorageAdapter<T> {
   private folderPath: string;
-  serializer: ConstructorOptions['serializer'];
-  deserializer: ConstructorOptions['deserializer'];
+  serializer: Serializer<T>;
+  deserializer: Deserializer<T>;
 
   /**
    * @constructor
@@ -21,16 +24,13 @@ export class FileAdapter<T> implements StorageAdapter<T> {
    * @param {opts.deserializer} options.deserializer
    * deserializer of file. Default `JSON.parse(input)`.
    */
-  constructor(opts: ConstructorOptions = {}) {
-    this.folderPath = path.resolve(cwd(), opts?.dirName ?? 'sesions');
+  constructor(opts: ConstructorOptions<T> = {}) {
+    this.folderPath = path.resolve(cwd(), opts?.dirName ?? "sessions");
 
-    if (!opts.serializer) {
-      this.serializer = (input) => JSON.stringify(input, null, '\t');
-    }
-
-    if (!opts.deserializer) {
-      this.deserializer = (input: string) => JSON.parse(input);
-    }
+    this.serializer = opts.serializer ??
+      ((input) => JSON.stringify(input, null, "\t"));
+    this.deserializer = opts.deserializer ??
+      ((input) => JSON.parse(input));
 
     fs.ensureDirSync(this.folderPath);
   }
@@ -43,7 +43,7 @@ export class FileAdapter<T> implements StorageAdapter<T> {
   private async findSessionFile(key: string) {
     try {
       return await fs.readFile(this.resolveSessionPath(key));
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -55,7 +55,7 @@ export class FileAdapter<T> implements StorageAdapter<T> {
       return undefined;
     }
 
-    return this.deserializer!(file) as T;
+    return this.deserializer(file);
   }
 
   async write(key: string, value: T) {
@@ -64,7 +64,7 @@ export class FileAdapter<T> implements StorageAdapter<T> {
     const folderPath = fullPath.substring(0, fullPath.length - fileName.length);
 
     await fs.ensureDir(folderPath);
-    await fs.writeFile(fullPath, this.serializer!(value));
+    await fs.writeFile(fullPath, this.serializer(value));
   }
 
   async delete(key: string) {
