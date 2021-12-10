@@ -1,17 +1,9 @@
 
-import { Bot, Context, SessionFlavor, session } from 'https://deno.land/x/grammy@v1.3.4/mod.ts';
+import { session } from 'https://deno.land/x/grammy@v1.5.2/mod.ts';
 import { expect } from 'https://deno.land/x/expect@v0.2.9/mod.ts'
 import { FileAdapter } from '../src/mod.ts';
 import { fs, path } from '../src/deps.deno.ts'
-
-interface SessionData {
-  pizzaCount: number;
-}
-
-interface StringSessionFlavor {
-  get session(): string;
-  set session(session: string | null | undefined);
-}
+import { createMessage, createBot } from "https://deno.land/x/grammy_storage_utils@1.0.1/mod.ts"
 
 const dirPath = path.resolve(Deno.cwd(), 'sessions')
 const cleanDir = () => Deno.remove(dirPath, { recursive: true })
@@ -24,17 +16,7 @@ Deno.test('Should create sessions dir', async () => {
 })
  
 Deno.test('Pizza counter tests', async () => {
-  const bot = new Bot<Context & SessionFlavor<SessionData>>('fake-token', { 
-    botInfo: {
-      id: 42,
-      first_name: 'Test Bot',
-      is_bot: true,
-      username: 'bot',
-      can_join_groups: true,
-      can_read_all_group_messages: true,
-      supports_inline_queries: false,
-    },
-  });;
+  const bot = createBot()
 
   bot.use(session({
     initial: () => ({ pizzaCount: 0 }),
@@ -57,17 +39,7 @@ Deno.test('Pizza counter tests', async () => {
 })
 
 Deno.test('Simple string tests', async () => {
-  const bot = new Bot<Context & StringSessionFlavor>('fake-token', { 
-    botInfo: {
-      id: 42,
-      first_name: 'Test Bot',
-      is_bot: true,
-      username: 'bot',
-      can_join_groups: true,
-      can_read_all_group_messages: true,
-      supports_inline_queries: false,
-    },
-  });;
+  const bot = createBot(false)
 
   bot.use(session({
     initial: () => 'test',
@@ -87,26 +59,3 @@ Deno.test('Simple string tests', async () => {
 
   await cleanDir()
 })
-
-function createMessage(bot: Bot<any>, text = 'Test Text') {
-  const createRandomNumber = () => Math.floor(Math.random() * (123456789 - 1) + 1);
-
-  const ctx = new Context({ 
-    update_id: createRandomNumber(), 
-    message: { 
-      text,
-      message_id: createRandomNumber(),
-      chat: { 
-        id: 1,
-        type: 'private',
-        first_name: 'Test User',
-      },
-      date: Date.now(),
-    },
-  }, 
-  bot.api, 
-  bot.botInfo
-  );
-
-  return ctx;
-}
