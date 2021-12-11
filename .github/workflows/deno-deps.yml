@@ -12,8 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: denoland/setup-deno@v1
-        with:
-          deno-version: 1.15.3
       - name: Update dependencies
         run: |
           deno run -A https://deno.land/x/udd/main.ts src/*.ts __tests__/*.ts examples/*.ts
@@ -44,13 +42,3 @@ jobs:
         continue-on-error: true
         run: |
           deno test __tests__/deno.ts --allow-write --allow-read --unstable
-  deno-tests:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup Deno
-        uses: maximousblk/setup-deno@v1
-      - run: deno -V
-      - name: Run tests
-        run: deno test __tests__/deno.ts --allow-write --allow-read --unstable
