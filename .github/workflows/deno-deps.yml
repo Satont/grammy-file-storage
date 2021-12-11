@@ -16,7 +16,7 @@ jobs:
           deno-version: 1.15.3
       - name: Update dependencies
         run: |
-          deno run -A https://deno.land/x/udd/main.ts *.ts
+          deno run -A https://deno.land/x/udd/main.ts src/*.ts __tests__/*.ts examples/*.ts
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         id: pr
