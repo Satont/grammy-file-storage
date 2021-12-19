@@ -1,4 +1,4 @@
-import { Bot, Context, session, SessionFlavor } from "https://deno.land/x/grammy@v1.5.3/mod.ts";
+import { Bot, Context, session, SessionFlavor } from "https://deno.land/x/grammy@v1.5.4/mod.ts";
 import { FileAdapter } from "https://deno.land/x/grammy_file_storage/mod.ts"
 
 interface SessionData {
