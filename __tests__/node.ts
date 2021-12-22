@@ -3,7 +3,7 @@ import { session } from 'grammy';
 import { FileAdapter } from '../dist/mod';
 import { fs, path, cwd } from '../dist/deps.node'
 import { createBot, createMessage} from '@satont/grammy-storage-utils'
-
+import { test, beforeEach, expect } from 'vitest'
 
 const dirPath = path.resolve(cwd(), 'sessions')
 const cleanDir = async () => {
